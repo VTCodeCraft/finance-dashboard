@@ -13,11 +13,22 @@ import { useDashboardWorkspace } from "@/components/dashboard/use-dashboard-work
 import { WalletOverview } from "@/components/dashboard/wallet-overview";
 import { supportedCurrencies } from "@/lib/currency";
 
-type DashboardPage = "overview" | "finance" | "transactions" | "analytics" | "wallet";
+type DashboardPage =
+  | "overview"
+  | "finance"
+  | "transactions"
+  | "analytics"
+  | "wallet";
 
 interface DashboardShellProps {
   page: DashboardPage;
 }
+
+const sectionMotion = {
+  initial: { opacity: 0, y: 18, filter: "blur(6px)" },
+  animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+  transition: { duration: 0.45, ease: "easeOut" as const },
+};
 
 function PageSectionHeader({
   eyebrow,
@@ -40,6 +51,25 @@ function PageSectionHeader({
         {description}
       </p>
     </div>
+  );
+}
+
+function AnimatedSection({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <motion.section
+      initial={sectionMotion.initial}
+      animate={sectionMotion.animate}
+      transition={sectionMotion.transition}
+      className={className}
+    >
+      {children}
+    </motion.section>
   );
 }
 
@@ -74,40 +104,7 @@ export function DashboardShell({ page }: DashboardShellProps) {
     toggleTheme,
     totals,
     transactions,
-  } = {
-    ...workspace,
-  };
-
-  const header = (
-    <DashboardHeader
-      role={role}
-      theme={theme}
-      currency={currency}
-      currencyOptions={supportedCurrencies}
-      currencyLocale={currencyOption.locale}
-      exchangeRate={exchangeRate}
-      exchangeRateDate={rateState.date}
-      rateStatusLabel={rateStatusLabel}
-      transactionCount={totals.transactionCount}
-      balance={totals.balance}
-      hasHydrated={hasHydrated}
-      onRoleChange={setRole}
-      onCurrencyChange={setCurrency}
-      onToggleTheme={toggleTheme}
-    />
-  );
-
-  const sidebar = (
-    <DashboardSidebar
-      role={role}
-      currency={currency}
-      currencyLocale={currencyOption.locale}
-      balance={totals.balance * exchangeRate}
-      transactionCount={totals.transactionCount}
-      hasHydrated={hasHydrated}
-      totals={totals}
-    />
-  );
+  } = workspace;
 
   const summaryCards = (
     <SummaryCards
@@ -158,79 +155,133 @@ export function DashboardShell({ page }: DashboardShellProps) {
     />
   );
 
-  const pageBody =
-    page === "overview" ? (
-      <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_360px]">
-        <div className="space-y-6">
-          <section className="space-y-4">
-            <PageSectionHeader
-              eyebrow="Overview"
-              title="Portfolio overview"
-              description="A higher-level snapshot of your workspace with the most important financial signals first."
-            />
-            {summaryCards}
-          </section>
-          <section className="space-y-4">
-            <PageSectionHeader
-              eyebrow="Highlights"
-              title="Finance command view"
-              description="Key signals pulled apart into distinct modules so the page feels less stacked and easier to scan."
-            />
-            {charts}
-          </section>
-        </div>
-        <div className="space-y-6">
-          {spotlight}
-          <InsightsPanel insights={insights} compact />
-        </div>
-      </div>
-    ) : page === "finance" ? (
-      <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_360px]">
-        <div className="space-y-6">
-          <section className="space-y-4">
-            <PageSectionHeader
-              eyebrow="Finance"
-              title="Core finance dashboard"
-              description="The main finance view combines totals, trend movement, and expense allocation into one focused workspace."
-            />
-            {summaryCards}
-          </section>
-          <section className="space-y-4">{charts}</section>
-        </div>
-        <div className="space-y-6">
-          {spotlight}
-          <InsightsPanel insights={insights} compact />
-        </div>
-      </div>
-    ) : page === "transactions" ? (
+  const header = (
+    <DashboardHeader
+      role={role}
+      theme={theme}
+      currency={currency}
+      currencyOptions={supportedCurrencies}
+      currencyLocale={currencyOption.locale}
+      exchangeRate={exchangeRate}
+      exchangeRateDate={rateState.date}
+      rateStatusLabel={rateStatusLabel}
+      transactionCount={totals.transactionCount}
+      balance={totals.balance}
+      hasHydrated={hasHydrated}
+      onRoleChange={setRole}
+      onCurrencyChange={setCurrency}
+      onToggleTheme={toggleTheme}
+    />
+  );
+
+  const sidebar = (
+    <DashboardSidebar
+      role={role}
+      currency={currency}
+      currencyLocale={currencyOption.locale}
+      balance={totals.balance * exchangeRate}
+      transactionCount={totals.transactionCount}
+      hasHydrated={hasHydrated}
+      totals={totals}
+    />
+  );
+
+  const overviewBody = (
+    <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_360px]">
       <div className="space-y-6">
-        <section className="space-y-4">
+        <AnimatedSection className="space-y-4">
           <PageSectionHeader
-            eyebrow="Transactions"
-            title="Dedicated activity ledger"
-            description="All transaction management now lives on its own route, with separate space for searching, sorting, and admin actions."
+            eyebrow="Overview"
+            title="Portfolio overview"
+            description="A higher-level snapshot of your workspace with the most important financial signals first."
           />
           {summaryCards}
-        </section>
-        {transactionsSection}
+        </AnimatedSection>
+
+        <AnimatedSection className="space-y-4">
+          <PageSectionHeader
+            eyebrow="Highlights"
+            title="Finance command view"
+            description="Key signals pulled apart into distinct modules so the page feels less stacked and easier to scan."
+          />
+          {charts}
+        </AnimatedSection>
       </div>
-    ) : page === "analytics" ? (
-      <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_360px]">
-        <div className="space-y-6">
-          <section className="space-y-4">
-            <PageSectionHeader
-              eyebrow="Analytics"
-              title="Deep-dive performance"
-              description="A dedicated analytics route for trends, allocation, and interpretive insights instead of squeezing them into the main page."
-            />
-            {charts}
-          </section>
-          <InsightsPanel insights={insights} />
-        </div>
-        <div className="space-y-6">{spotlight}</div>
-      </div>
-    ) : (
+
       <div className="space-y-6">
+        <AnimatedSection>{spotlight}</AnimatedSection>
+        <AnimatedSection>
+          <InsightsPanel insights={insights} compact />
+        </AnimatedSection>
+      </div>
+    </div>
+  );
+
+  const financeBody = (
+    <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="space-y-6">
+        <AnimatedSection className="space-y-4">
+          <PageSectionHeader
+            eyebrow="Finance"
+            title="Core finance dashboard"
+            description="The main finance view combines totals, trend movement, and expense allocation into one focused workspace."
+          />
+          {summaryCards}
+        </AnimatedSection>
+
+        <AnimatedSection className="space-y-4">{charts}</AnimatedSection>
+      </div>
+
+      <div className="space-y-6">
+        <AnimatedSection>{spotlight}</AnimatedSection>
+        <AnimatedSection>
+          <InsightsPanel insights={insights} compact />
+        </AnimatedSection>
+      </div>
+    </div>
+  );
+
+  const transactionsBody = (
+    <div className="space-y-6">
+      <AnimatedSection className="space-y-4">
+        <PageSectionHeader
+          eyebrow="Transactions"
+          title="Dedicated activity ledger"
+          description="All transaction management now lives on its own route, with separate space for searching, sorting, and admin actions."
+        />
+        {summaryCards}
+      </AnimatedSection>
+
+      <AnimatedSection>{transactionsSection}</AnimatedSection>
+    </div>
+  );
+
+  const analyticsBody = (
+    <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="space-y-6">
+        <AnimatedSection className="space-y-4">
+          <PageSectionHeader
+            eyebrow="Analytics"
+            title="Deep-dive performance"
+            description="A dedicated analytics route for trends, allocation, and interpretive insights instead of squeezing them into the main page."
+          />
+          {charts}
+        </AnimatedSection>
+
+        <AnimatedSection>
+          <InsightsPanel insights={insights} />
+        </AnimatedSection>
+      </div>
+
+      <div className="space-y-6">
+        <AnimatedSection>{spotlight}</AnimatedSection>
+      </div>
+    </div>
+  );
+
+  const walletBody = (
+    <div className="space-y-6">
+      <AnimatedSection>
         <WalletOverview
           currency={currency}
           currencyLocale={currencyOption.locale}
@@ -239,12 +290,25 @@ export function DashboardShell({ page }: DashboardShellProps) {
           role={role}
           totals={totals}
         />
-        <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_360px]">
-          <div>{summaryCards}</div>
-          <div>{spotlight}</div>
-        </div>
+      </AnimatedSection>
+
+      <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_360px]">
+        <AnimatedSection>{summaryCards}</AnimatedSection>
+        <AnimatedSection>{spotlight}</AnimatedSection>
       </div>
-    );
+    </div>
+  );
+
+  const pageBody =
+    page === "overview"
+      ? overviewBody
+      : page === "finance"
+        ? financeBody
+        : page === "transactions"
+          ? transactionsBody
+          : page === "analytics"
+            ? analyticsBody
+            : walletBody;
 
   return (
     <div className="relative flex-1 overflow-hidden">
@@ -252,18 +316,25 @@ export function DashboardShell({ page }: DashboardShellProps) {
 
       <main className="relative mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <div className="grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)]">
-          <div className="xl:sticky xl:top-6 xl:self-start">{sidebar}</div>
+          <motion.div
+            initial={sectionMotion.initial}
+            animate={sectionMotion.animate}
+            transition={sectionMotion.transition}
+            className="xl:sticky xl:top-6 xl:self-start"
+          >
+            {sidebar}
+          </motion.div>
 
           <div className="space-y-6">
-            {header}
-
             <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, ease: "easeOut" }}
+              initial={sectionMotion.initial}
+              animate={sectionMotion.animate}
+              transition={sectionMotion.transition}
             >
-              {pageBody}
+              {header}
             </motion.div>
+
+            {pageBody}
           </div>
         </div>
       </main>

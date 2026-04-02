@@ -1,6 +1,5 @@
 
-
-# Finance Dashboard
+# Finora - Finance Dashboard
 
 ### A polished, frontend-first personal finance workspace
 

@@ -7,27 +7,39 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 interface InsightsPanelProps {
   insights: InsightCardData[];
+  compact?: boolean;
 }
 
-export function InsightsPanel({ insights }: InsightsPanelProps) {
+export function InsightsPanel({ insights, compact = false }: InsightsPanelProps) {
   return (
     <section className="space-y-4">
-      <div className="flex items-end justify-between gap-4">
+      {compact ? (
         <div>
           <p className="text-sm font-medium uppercase tracking-[0.22em] text-muted-foreground">
             Insights
           </p>
           <h2 className="mt-2 font-heading text-3xl text-foreground">
-            What the numbers are saying
+            Quick reads
           </h2>
         </div>
-        <p className="max-w-xl text-sm leading-6 text-muted-foreground">
-          Lightweight observations generated from the full persisted dataset, not
-          just the currently filtered table.
-        </p>
-      </div>
+      ) : (
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <p className="text-sm font-medium uppercase tracking-[0.22em] text-muted-foreground">
+              Insights
+            </p>
+            <h2 className="mt-2 font-heading text-3xl text-foreground">
+              What the numbers are saying
+            </h2>
+          </div>
+          <p className="max-w-xl text-sm leading-6 text-muted-foreground">
+            Lightweight observations generated from the full persisted dataset, not
+            just the currently filtered table.
+          </p>
+        </div>
+      )}
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className={`grid gap-4 ${compact ? "grid-cols-1" : "lg:grid-cols-3"}`}>
         {insights.map((insight) => {
           const toneStyles =
             insight.tone === "positive"
@@ -59,7 +71,9 @@ export function InsightsPanel({ insights }: InsightsPanelProps) {
                 </div>
                 <div>
                   <CardDescription>{insight.title}</CardDescription>
-                  <CardTitle className="mt-2 text-2xl">{insight.headline}</CardTitle>
+                  <CardTitle className={`mt-2 ${compact ? "text-xl" : "text-2xl"}`}>
+                    {insight.headline}
+                  </CardTitle>
                 </div>
               </CardHeader>
               <CardContent>

@@ -1,495 +1,351 @@
+
+
 # Finance Dashboard
 
-A modern finance dashboard built with Next.js 16, React 19, Zustand, Tailwind CSS v4, shadcn-style UI primitives, and Recharts.
+### A polished, frontend-first personal finance workspace
 
-This project is intentionally frontend-focused. It demonstrates:
+![Next.js](https://img.shields.io/badge/Next.js-16.2.2-black?style=flat-square&logo=next.js)
+![React](https://img.shields.io/badge/React-19.2.4-61DAFB?style=flat-square&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+![Zustand](https://img.shields.io/badge/Zustand-persisted-FF6B35?style=flat-square)
+![Recharts](https://img.shields.io/badge/Recharts-charts-22C55E?style=flat-square)
 
-- responsive dashboard design
-- route-based information architecture
-- state management with persistence
-- role-based UI behavior
-- client-side analytics
-- live currency conversion
-- dark mode with no-flash reload handling
-- reusable component structure
+<br/>
 
-## What The Website Includes
+> **Track. Analyze. Understand.** A beautifully designed finance dashboard built for developers who care about UX, design systems, and frontend architecture.
 
-The website is a personal finance workspace that helps users track and understand financial activity through multiple dedicated routes instead of one long page.
+<br/>
 
-### Main features
+[✦ Features](#-features) · [✦ Pages](#-pages) · [✦ Roles](#-role-based-access) · [✦ Currency](#-currency-system) · [✦ Architecture](#-architecture) · [✦ Getting Started](#-getting-started)
 
-- Overview page with high-level snapshot cards, recent activity, and compact insight panels
-- Finance page focused on balances, expense allocation, and trend charts
-- Transactions page with search, filtering, sorting, add/delete actions, category suggestions, and inline calendar input
-- Analytics page focused on deeper interpretation, performance breakdowns, and chart-heavy reporting
-- Wallet page focused on display currency, exchange rate context, and holdings-style summaries
-- Frontend-only role switching between `viewer` and `admin`
-- Local persistence using `localStorage`
-- Currency selection with live exchange-rate conversion
-- Dark mode with immediate theme restoration on reload
-- Shared sidebar navigation with real Next.js page routes
+</div>
 
-## Routes
+---
 
-The app is split into dedicated pages under the App Router:
+<br/>
 
-- `/`
-  Overview route. Built for quick scanning and summary-level understanding.
-- `/finance`
-  Core finance dashboard. This is the most traditional “dashboard” page.
-- `/transactions`
-  Dedicated ledger page for searching, filtering, sorting, adding, and deleting transactions.
-- `/analytics`
-  Deeper reporting and interpretation route focused on performance and trend analysis.
-- `/wallet`
-  Currency and holdings route focused on display currency, exchange rates, and wallet-style summaries.
+## ✦ Overview
 
-## Role-Based Access
+**FinDash** is a frontend-focused personal finance workspace demonstrating what great UI engineering looks like — not just lines of code, but intentional design, architecture, and user experience.
 
-The app simulates frontend-only roles:
+Built with **Next.js App Router**, **Zustand**, **Recharts**, and **Tailwind CSS v4**, this project shows how to compose a real product UI from the ground up: state, analytics, theming, routing, and visual polish — all working together.
 
-- `viewer`
-  Can browse all pages, see charts, cards, insights, and transaction data.
-- `admin`
-  Can do everything a viewer can do, plus:
-  - add transactions
-  - delete transactions
-  - reset demo data
+<br/>
 
-Role switching is available in the shared dashboard header and persists locally.
+## ✦ Features
 
-## Currency System
+| Category | What's Included |
+|---|---|
+| 🗺️ **Routing** | 5 dedicated App Router pages with a shared sidebar shell |
+| 📊 **Charts** | Balance trends, expense mix, monthly breakdowns via Recharts |
+| 💱 **Currency** | Live exchange rates from Frankfurter API — 9 currencies supported |
+| 🔐 **Roles** | Viewer & Admin modes with persisted UI behavior |
+| 🌙 **Dark Mode** | Flash-free theme restore using a `beforeInteractive` script |
+| 💾 **Persistence** | Zustand + `localStorage` — state survives refreshes |
+| 🧠 **Analytics** | Derived insights, trends, and category analysis from real data |
+| ✨ **Animations** | Framer Motion entrance animations across all major sections |
+| 📱 **Responsive** | Sidebar-first layout that adapts across screen sizes |
 
-The app stores transaction amounts internally in `USD` as its base currency.
+<br/>
 
-Users can switch the display currency from the header. Supported currencies currently include:
+## ✦ Pages
 
-- `USD`
-- `INR`
-- `EUR`
-- `GBP`
-- `JPY`
-- `CAD`
-- `AUD`
-- `SGD`
-- `AED`
+```
+/               →  Overview      Quick snapshot cards, recent activity, category leaderboard
+/finance        →  Finance       Balance trends, expense mix chart, spotlight panel
+/transactions   →  Transactions  Full ledger with search, filter, sort, add & delete
+/analytics      →  Analytics     Deeper reporting, trend analysis, insight panels
+/wallet         →  Wallet        Currency context, exchange rates, holdings summary
+```
 
-### How conversion works
+### Page Highlights
 
-- The app fetches latest exchange rates from Frankfurter
-- Displayed values across cards, charts, insights, and tables are converted from the internal USD base
-- If an admin adds a transaction while another currency is selected, the entered amount is interpreted in that selected currency and converted back into USD before being saved
+<details>
+<summary><strong>🏠 Overview</strong> — The landing dashboard</summary>
+<br/>
 
-### Important note
+Designed for fastest possible time-to-insight. Built for breadth, not depth.
 
-These are latest available daily reference rates, not real-time tick-by-tick forex updates.
+- Summary metric cards
+- Recent transactions panel
+- Category leaderboard
+- Compact analytics breakdown
+- Compact insights panel
 
-## Persistence
+</details>
 
-The dashboard uses Zustand with persistence.
+<details>
+<summary><strong>📈 Finance</strong> — The control panel</summary>
+<br/>
 
-Persisted values include:
+The most traditional "dashboard" page. Chart-focused and ideal for visual cash flow monitoring.
 
-- transactions
-- selected role
-- selected theme
-- selected currency
+- Balance trend chart
+- Expense mix chart
+- Category leaderboard
+- Spotlight panel
+- Insights panel
 
-This means the app remembers the user’s environment across refreshes.
+</details>
 
-## Dark Mode
+<details>
+<summary><strong>🧾 Transactions</strong> — The ledger</summary>
+<br/>
 
-Dark mode is handled in two layers:
+A full-featured data management experience.
 
-- persisted theme state in Zustand
-- a `beforeInteractive` script in the root layout that reads the saved theme from local storage before hydration
+- Search by description, category, or type
+- Filter by type or category
+- Sort by date or amount
+- Inline calendar for date input
+- Category suggestion menu (shadcn-style)
+- Add & delete transactions (Admin only)
+- Empty and no-results states
 
-This prevents the “flash of wrong theme” problem on reload.
+</details>
 
-## Sidebar Navigation
+<details>
+<summary><strong>🔭 Analytics</strong> — The reporting layer</summary>
+<br/>
 
-The sidebar is route-aware and highlights the active page.
+Interpretation and analysis, not operational controls.
 
-Navigation entries:
+- KPI breakdown cards
+- Trend and allocation charts
+- Full insights panel
+- Category leaderboard
+- Spotlight rail
 
-- Overview
-- Finance
-- Transactions
-- Analytics
-- Wallet
+</details>
 
-The sidebar also includes:
+<details>
+<summary><strong>💼 Wallet</strong> — The currency view</summary>
+<br/>
 
-- portfolio summary
-- current role summary
-- sync status
-- a small workspace pulse area
-- a profile/settings style footer section
+Holdings-style summaries with currency focus.
 
-## Page-By-Page Breakdown
+- Available balance
+- Income & expense flow
+- Savings efficiency
+- Live exchange rate panel
+- Display currency context
 
-### 1. Overview Page
+</details>
 
-Purpose:
-Provide the fastest possible read on the user’s finances.
+<br/>
 
-Content on this page:
+## ✦ Role-Based Access
 
-- summary cards
-- recent transactions panel
-- category leaderboard
-- compact analytics breakdown
-- compact insights panel
+The app simulates frontend-only roles, switchable from the header — no backend required.
 
-This page is designed as the “landing dashboard” and focuses on breadth rather than detail.
+```
+👁️  Viewer    Browse all pages · see charts, cards, insights, and transactions
+🛠️  Admin     Everything above + add transactions · delete transactions · reset data
+```
 
-### 2. Finance Page
+Role selection persists across sessions via Zustand.
 
-Purpose:
-Act as the central finance control panel.
+<br/>
 
-Content on this page:
+## ✦ Currency System
 
-- summary cards
-- balance trend chart
-- expense mix chart
-- category leaderboard
-- spotlight panel
-- compact insights panel
+All transaction amounts are stored internally in **USD**. Display conversion happens at render time using the latest rates from [Frankfurter](https://www.frankfurter.app/).
 
-This page is chart-focused and best for visual monitoring of cash flow and category pressure.
+**Supported currencies:**
 
-### 3. Transactions Page
+```
+USD  ·  INR  ·  EUR  ·  GBP  ·  JPY  ·  CAD  ·  AUD  ·  SGD  ·  AED
+```
 
-Purpose:
-Provide a focused ledger experience.
+**How it works:**
 
-Content on this page:
+1. User selects a display currency from the header
+2. The app fetches the latest daily reference rates
+3. All values across cards, charts, tables, and insights are converted on the fly
+4. When an Admin adds a transaction in a non-USD currency, the amount is converted back to USD before being saved
 
-- summary cards
-- recent activity snapshot
-- full transactions section
+> ⚠️ These are daily reference rates — not real-time tick-by-tick forex data.
 
-Transactions section supports:
+<br/>
 
-- search by description/category/type
-- filter by type
-- filter by category
-- sort by date
-- sort by amount
-- add transaction
-- delete transaction
-- reset demo data
-- empty states
-- no-results states
+## ✦ Architecture
 
-### Add transaction form details
+```
+src/
+├── app/                        # Next.js App Router pages
+│   ├── page.tsx                # / — Overview
+│   ├── finance/page.tsx        # /finance
+│   ├── transactions/page.tsx   # /transactions
+│   ├── analytics/page.tsx      # /analytics
+│   └── wallet/page.tsx         # /wallet
+│
+├── components/dashboard/       # All dashboard UI components
+│   ├── dashboard-shell.tsx     # Route composition selector
+│   ├── dashboard-header.tsx    # Role switch · currency picker · theme toggle
+│   ├── dashboard-sidebar.tsx   # Nav · portfolio summary · status
+│   ├── summary-cards.tsx       # Metric cards
+│   ├── dashboard-charts.tsx    # Balance trend + expense mix
+│   ├── transactions-section.tsx# Full ledger + add form + filters
+│   ├── insights-panel.tsx      # Human-readable derived insights
+│   ├── analytics-breakdown.tsx # Analytics KPI cards
+│   ├── wallet-overview.tsx     # Wallet route content
+│   └── ...                     # + more shared components
+│
+├── lib/                        # Utilities and domain logic
+│   ├── finance-analytics.ts    # All derived metrics and insights
+│   ├── finance-format.ts       # Number and currency formatting
+│   ├── currency.ts             # Exchange rate fetching + conversion
+│   ├── finance-data.ts         # Seed transaction data
+│   └── finance-types.ts        # Shared TypeScript types
+│
+└── store/
+    └── use-finance-store.ts    # Zustand store + localStorage persistence
+```
 
-The admin add form includes:
+### Central Workspace Hook
 
-- inline calendar layout for date selection
-- text input for description
-- amount input in the currently selected currency
-- category suggestions using themed shadcn-style menu behavior
-- themed type picker
-
-### 4. Analytics Page
-
-Purpose:
-Surface interpretation and reporting instead of operational controls.
-
-Content on this page:
-
-- analytics breakdown cards
-- trend and allocation charts
-- full insights panel
-- category leaderboard
-- spotlight rail
-
-This page is intended to feel more like analysis/reporting than day-to-day management.
-
-### 5. Wallet Page
-
-Purpose:
-Focus on currency context and holdings-style summaries.
-
-Content on this page:
-
-- available balance
-- income flow
-- expense flow
-- savings efficiency
-- exchange rate panel
-- role note
-- display currency note
-
-This page acts as a wallet-style dashboard with more emphasis on currency and account context.
-
-## Charts And Analytics
-
-The app includes multiple derived analytics views built entirely from client-side transaction data.
-
-### Summary metrics
-
-- total balance
-- total income
-- total expenses
-- savings rate
-
-### Trend analytics
-
-- monthly grouped balance trend
-- monthly income vs expense movement
-- month-over-month net change
-
-### Category analytics
-
-- expense mix by category
-- category leaderboard
-- top-spending category logic
-
-### Insight generation
-
-The app derives human-readable insights such as:
-
-- top spending category
-- monthly comparison
-- largest recent expense
-
-Insights are generated from pure analytics helpers, not hardcoded UI strings scattered across components.
-
-## Transactions Data Model
-
-Each transaction includes:
-
-- `id`
-- `date`
-- `description`
-- `amount`
-- `category`
-- `type`
-
-Where:
-
-- `type` is either `income` or `expense`
-- `amount` is stored as a positive number
-- the sign shown in the UI is derived from `type`
-
-## Seed Data
-
-The app starts with realistic seeded finance data so the dashboard feels meaningful immediately.
-
-Seeded data includes:
-
-- salary entries
-- rent
-- groceries
-- transport
-- utilities
-- health
-- entertainment
-- consulting income
-- refunds
-
-The user can modify this locally through admin controls.
-
-## Architecture
-
-The project is organized around three main areas:
-
-- `src/app`
-  App Router pages and root layout
-- `src/components/dashboard`
-  Dashboard-specific UI components and route building blocks
-- `src/lib`
-  types, seed data, formatting, analytics, and currency utilities
-- `src/store`
-  Zustand store and persisted application state
-
-## Important Files
-
-### App routes
-
-- `src/app/page.tsx`
-- `src/app/finance/page.tsx`
-- `src/app/transactions/page.tsx`
-- `src/app/analytics/page.tsx`
-- `src/app/wallet/page.tsx`
-
-### Shared dashboard shell
-
-- `src/components/dashboard/dashboard-shell.tsx`
-
-This file selects the correct layout/content composition for each route.
-
-### Shared workspace hook
-
-- `src/components/dashboard/use-dashboard-workspace.ts`
-
-This file centralizes:
+`use-dashboard-workspace.ts` is the single source of truth for each page. It centralizes:
 
 - Zustand store access
-- theme synchronization
-- exchange-rate fetching
-- derived analytics calculations
-- filtered transaction lists
+- Theme synchronization
+- Exchange rate fetching
+- Derived analytics calculations
+- Filtered transaction lists
 
-### State
+<br/>
 
-- `src/store/use-finance-store.ts`
+## ✦ Data Model
 
-This store manages:
+Each transaction is a simple, flat object:
 
-- transactions
-- role
-- theme
-- currency
-- filters
-- persistence
+```ts
+type Transaction = {
+  id:          string
+  date:        string        // ISO date string
+  description: string
+  amount:      number        // Always positive; stored in USD
+  category:    string        // e.g. "Groceries", "Salary"
+  type:        "income" | "expense"
+}
+```
 
-### Analytics and formatting
+> The sign shown in the UI is **derived from `type`** — never stored on the amount.
 
-- `src/lib/finance-analytics.ts`
-- `src/lib/finance-format.ts`
-- `src/lib/currency.ts`
-- `src/lib/finance-data.ts`
-- `src/lib/finance-types.ts`
+<br/>
 
-## UI Component Breakdown
+## ✦ Analytics Engine
 
-Important dashboard components:
+All analytics are computed client-side from the transaction list — no backend, no pre-aggregated data.
 
-- `dashboard-header.tsx`
-  Shared top control bar with role switch, currency picker, and theme toggle
-- `dashboard-sidebar.tsx`
-  Shared sidebar navigation and status panels
-- `summary-cards.tsx`
-  Metric cards for overview pages
-- `dashboard-charts.tsx`
-  Balance trend and expense mix visualizations
-- `transactions-section.tsx`
-  Ledger table, filters, add form, suggestions, and inline calendar
-- `insights-panel.tsx`
-  Human-readable analytical insights
-- `dashboard-spotlight.tsx`
-  Compact side-rail context panel
-- `recent-transactions-panel.tsx`
-  Fast snapshot of the latest entries
-- `category-leaderboard.tsx`
-  Ranked expense categories
-- `analytics-breakdown.tsx`
-  Analytics-only KPI cards
-- `wallet-overview.tsx`
-  Wallet route content
+```
+📦 Summary Metrics          Total balance · income · expenses · savings rate
+📈 Trend Analytics          Monthly balance trend · income vs expense · MoM delta
+🏷️  Category Analytics      Expense mix by category · leaderboard · top-spend logic
+💡 Insight Generation       Human-readable insights derived from pure analytics helpers
+```
 
-## Animations
+<br/>
 
-The dashboard uses motion-based entrance animations across major sections.
+## ✦ Tech Stack
 
-The goal is:
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16.2.2 (App Router) |
+| UI Library | React 19.2.4 |
+| Language | TypeScript |
+| Styling | Tailwind CSS v4 |
+| State | Zustand (with persistence) |
+| Charts | Recharts |
+| Animation | Framer Motion |
+| Primitives | Radix UI |
+| Exchange Rates | Frankfurter API |
 
-- smoother initial load
-- clearer page segmentation
-- less abrupt route rendering
+<br/>
 
-Sections animate into place together so the page feels cohesive instead of revealing one block at a time in a distracting way.
-
-## Design Direction
-
-The visual system is intentionally not a plain starter dashboard.
-
-It uses:
-
-- warm neutral surfaces
-- teal/gold accent balance
-- rounded finance-product cards
-- sidebar-based workspace layout
-- route-specific composition
-- expressive typography
-- soft background gradients and blur layers
-
-The overall goal is to feel closer to a polished finance product than a demo landing page.
-
-## Getting Started
-
-Install dependencies and run the development server:
+## ✦ Getting Started
 
 ```bash
+# Install dependencies
 npm install
+
+# Start the development server
 npm run dev
 ```
 
-Open:
+Then open **[http://localhost:3000](http://localhost:3000)** in your browser.
+
+### Verification
 
 ```bash
-http://localhost:3000
-```
-
-## Verification Commands
-
-Useful local checks:
-
-```bash
+# Lint check
 npm run lint
+
+# Type check
 node_modules/.bin/tsc --noEmit
 ```
 
-## Tech Stack
+<br/>
 
-- Next.js 16.2.2
-- React 19.2.4
-- TypeScript
-- Zustand
-- Recharts
-- Tailwind CSS v4
-- shadcn-style UI components
-- Framer Motion
-- Radix UI primitives
+## ✦ Design System
 
-## Current Scope
+The visual system is intentionally far from a plain starter template.
 
-Included:
+```
+Surfaces     Warm neutral backgrounds with soft gradients and blur layers
+Accents      Teal / gold balance — financial without being sterile
+Typography   Expressive display type paired with refined body text
+Cards        Rounded finance-product style with subtle depth
+Layout       Sidebar-first workspace — route-specific content composition
+Motion       Framer Motion entrance animations for cohesive page loads
+```
 
-- frontend-only dashboard
-- route-based pages
-- role-based UI behavior
-- local persistence
-- dark mode
-- live currency conversion
-- responsive layout
-- charts and derived insights
+<br/>
 
-Not included:
+## ✦ Scope
 
-- backend
-- authentication
-- database
-- real user accounts
-- real banking integrations
-- server-side transaction storage
+**In scope (frontend-only):**
 
-## Why This Project Is Useful
+- ✅ Route-based pages with shared shell
+- ✅ Role-based UI behavior (viewer / admin)
+- ✅ Local persistence via Zustand + localStorage
+- ✅ Flash-free dark mode
+- ✅ Live currency conversion
+- ✅ Charts and derived analytics
+- ✅ Responsive layout
 
-This app is a strong frontend portfolio piece because it shows:
+**Out of scope (intentionally excluded):**
 
-- component decomposition
-- reusable route-aware UI
-- local-first state architecture
-- derived analytics from domain data
-- non-trivial UI interactions
-- consistent design system usage
-- thoughtful UX around theming, persistence, and routing
+- ❌ Backend / database
+- ❌ Authentication
+- ❌ Real banking integrations
+- ❌ Server-side transaction storage
 
-## Future Improvements
+<br/>
 
-Good next steps if you want to extend it further:
+## ✦ Roadmap
 
-- connect sidebar actions to deeper route-specific tools
-- add real calendar component primitives
-- add CSV export/import
-- add budgets and goals
-- add recurring transaction support
-- add server persistence
-- add authentication
-- add tests for analytics helpers and store behavior
+Good next steps for extending this further:
+
+- [ ] Real calendar component primitives
+- [ ] CSV export and import
+- [ ] Budgets and goals tracking
+- [ ] Recurring transaction support
+- [ ] Server persistence layer
+- [ ] Authentication system
+- [ ] Unit tests for analytics helpers and store
+- [ ] Sidebar actions wired to route-specific tools
+
+<br/>
+
+---
+
+<div align="center">
+
+Built as a frontend portfolio piece demonstrating **component decomposition**, **local-first state architecture**, **derived analytics**, and **polished design system usage**.
+
+<br/>
+
+*Made with care. Designed with intention.*
+
+</div>

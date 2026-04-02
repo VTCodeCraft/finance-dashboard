@@ -2,11 +2,14 @@
 
 import { motion } from "framer-motion";
 
+import { AnalyticsBreakdown } from "@/components/dashboard/analytics-breakdown";
+import { CategoryLeaderboard } from "@/components/dashboard/category-leaderboard";
 import { DashboardCharts } from "@/components/dashboard/dashboard-charts";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { InsightsPanel } from "@/components/dashboard/insights-panel";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { DashboardSpotlight } from "@/components/dashboard/dashboard-spotlight";
+import { RecentTransactionsPanel } from "@/components/dashboard/recent-transactions-panel";
 import { SummaryCards } from "@/components/dashboard/summary-cards";
 import { TransactionsSection } from "@/components/dashboard/transactions-section";
 import { useDashboardWorkspace } from "@/components/dashboard/use-dashboard-workspace";
@@ -135,6 +138,33 @@ export function DashboardShell({ page }: DashboardShellProps) {
     />
   );
 
+  const recentTransactions = (
+    <RecentTransactionsPanel
+      transactions={transactions}
+      currency={currency}
+      currencyLocale={currencyOption.locale}
+      exchangeRate={exchangeRate}
+    />
+  );
+
+  const categoryLeaderboard = (
+    <CategoryLeaderboard
+      expenseBreakdown={expenseBreakdown}
+      currency={currency}
+      currencyLocale={currencyOption.locale}
+      exchangeRate={exchangeRate}
+    />
+  );
+
+  const analyticsBreakdown = (
+    <AnalyticsBreakdown
+      monthlySeries={monthlySeries}
+      currency={currency}
+      currencyLocale={currencyOption.locale}
+      exchangeRate={exchangeRate}
+    />
+  );
+
   const transactionsSection = (
     <TransactionsSection
       transactions={transactions}
@@ -201,15 +231,18 @@ export function DashboardShell({ page }: DashboardShellProps) {
         <AnimatedSection className="space-y-4">
           <PageSectionHeader
             eyebrow="Highlights"
-            title="Finance command view"
-            description="Key signals pulled apart into distinct modules so the page feels less stacked and easier to scan."
+            title="Daily command view"
+            description="Overview focuses on fast scanning: recent movement, category pressure, and a compact performance story."
           />
-          {charts}
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
+            {recentTransactions}
+            {categoryLeaderboard}
+          </div>
         </AnimatedSection>
       </div>
 
       <div className="space-y-6">
-        <AnimatedSection>{spotlight}</AnimatedSection>
+        <AnimatedSection>{analyticsBreakdown}</AnimatedSection>
         <AnimatedSection>
           <InsightsPanel insights={insights} compact />
         </AnimatedSection>
@@ -230,6 +263,7 @@ export function DashboardShell({ page }: DashboardShellProps) {
         </AnimatedSection>
 
         <AnimatedSection className="space-y-4">{charts}</AnimatedSection>
+        <AnimatedSection>{categoryLeaderboard}</AnimatedSection>
       </div>
 
       <div className="space-y-6">
@@ -252,6 +286,7 @@ export function DashboardShell({ page }: DashboardShellProps) {
         {summaryCards}
       </AnimatedSection>
 
+      <AnimatedSection>{recentTransactions}</AnimatedSection>
       <AnimatedSection>{transactionsSection}</AnimatedSection>
     </div>
   );
@@ -263,17 +298,19 @@ export function DashboardShell({ page }: DashboardShellProps) {
           <PageSectionHeader
             eyebrow="Analytics"
             title="Deep-dive performance"
-            description="A dedicated analytics route for trends, allocation, and interpretive insights instead of squeezing them into the main page."
+            description="Analytics is now a pure performance view centered on trends, month-over-month signals, and interpretation."
           />
-          {charts}
+          {analyticsBreakdown}
         </AnimatedSection>
 
+        <AnimatedSection>{charts}</AnimatedSection>
         <AnimatedSection>
           <InsightsPanel insights={insights} />
         </AnimatedSection>
       </div>
 
       <div className="space-y-6">
+        <AnimatedSection>{categoryLeaderboard}</AnimatedSection>
         <AnimatedSection>{spotlight}</AnimatedSection>
       </div>
     </div>

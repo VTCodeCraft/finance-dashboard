@@ -195,9 +195,7 @@ export function DashboardShell({ page }: DashboardShellProps) {
       exchangeRate={exchangeRate}
       exchangeRateDate={rateState.date}
       rateStatusLabel={rateStatusLabel}
-      transactionCount={totals.transactionCount}
       balance={totals.balance}
-      hasHydrated={hasHydrated}
       onRoleChange={setRole}
       onCurrencyChange={setCurrency}
       onToggleTheme={toggleTheme}

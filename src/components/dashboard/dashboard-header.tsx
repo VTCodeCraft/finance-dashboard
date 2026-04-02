@@ -30,9 +30,7 @@ interface DashboardHeaderProps {
   exchangeRate: number;
   exchangeRateDate: string | null;
   rateStatusLabel: string;
-  transactionCount: number;
   balance: number;
-  hasHydrated: boolean;
   onRoleChange: (role: UserRole) => void;
   onCurrencyChange: (currency: CurrencyCode) => void;
   onToggleTheme: () => void;
@@ -47,9 +45,7 @@ export function DashboardHeader({
   exchangeRate,
   exchangeRateDate,
   rateStatusLabel,
-  transactionCount,
   balance,
-  hasHydrated,
   onRoleChange,
   onCurrencyChange,
   onToggleTheme,
@@ -79,21 +75,7 @@ export function DashboardHeader({
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2 lg:w-[360px]">
-          <div className="rounded-2xl border border-border/70 bg-background/80 p-4 shadow-sm">
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
-              Synced data
-            </p>
-            <p className="mt-3 font-heading text-3xl text-foreground">
-              {transactionCount}
-            </p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {hasHydrated
-                ? "Saved in this browser with local persistence."
-                : "Hydrating your saved dashboard preferences."}
-            </p>
-          </div>
-
+        <div className="lg:w-[320px]">
           <div className="rounded-2xl border border-primary/20 bg-primary/8 p-4 shadow-sm">
             <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
               Display currency

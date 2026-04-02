@@ -1,10 +1,27 @@
 "use client";
 
 import { startTransition, useState, useTransition } from "react";
-import { ArrowDownUp, Eye, Filter, Plus, RotateCcw, Search, ShieldCheck, Trash2 } from "lucide-react";
+import {
+  ArrowDownUp,
+  Check,
+  ChevronDown,
+  Eye,
+  Filter,
+  Plus,
+  RotateCcw,
+  Search,
+  ShieldCheck,
+  Trash2,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -53,9 +70,6 @@ interface TransactionsSectionProps {
   onClearFilters: () => void;
 }
 
-const selectClassName =
-  "h-10 rounded-xl border border-input bg-background/80 px-3 text-sm text-foreground outline-none transition focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
-
 interface TransactionFormState {
   date: string;
   description: string;
@@ -71,6 +85,110 @@ const defaultFormState = (): TransactionFormState => ({
   category: "",
   type: "expense",
 });
+
+function FilterDropdown<T extends string>({
+  value,
+  options,
+  onSelect,
+}: {
+  value: T;
+  options: Array<{ value: T; label: string }>;
+  onSelect: (value: T) => void;
+}) {
+  const currentOption =
+    options.find((option) => option.value === value) ?? options[0];
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="outline"
+          className="h-10 w-full justify-between rounded-xl bg-background/80 px-3 text-sm font-normal"
+        >
+          <span className="truncate">{currentOption.label}</span>
+          <ChevronDown className="size-4 text-muted-foreground" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        className="w-56 rounded-2xl border border-border bg-popover/98 p-1.5 backdrop-blur"
+        align="start"
+      >
+        {options.map((option) => (
+          <DropdownMenuItem
+            key={option.value}
+            className="rounded-xl px-3 py-2"
+            onSelect={() => onSelect(option.value)}
+          >
+            <div className="flex w-full items-center justify-between gap-3">
+              <span>{option.label}</span>
+              {option.value === value ? (
+                <Check className="size-4 text-primary" />
+              ) : null}
+            </div>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+function CategorySuggestionInput({
+  value,
+  suggestions,
+  onChange,
+}: {
+  value: string;
+  suggestions: string[];
+  onChange: (value: string) => void;
+}) {
+  const normalizedValue = value.trim().toLowerCase();
+  const filteredSuggestions = suggestions.filter((suggestion) =>
+    normalizedValue.length === 0
+      ? true
+      : suggestion.toLowerCase().includes(normalizedValue)
+  );
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <div>
+          <Input
+            type="text"
+            value={value}
+            onChange={(event) => onChange(event.target.value)}
+            placeholder="Housing"
+            required
+          />
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        className="w-[var(--radix-dropdown-menu-trigger-width)] rounded-2xl border border-border bg-popover/98 p-1.5 backdrop-blur"
+        align="start"
+      >
+        {filteredSuggestions.length > 0 ? (
+          filteredSuggestions.slice(0, 6).map((suggestion) => (
+            <DropdownMenuItem
+              key={suggestion}
+              className="rounded-xl px-3 py-2"
+              onSelect={() => onChange(suggestion)}
+            >
+              <div className="flex w-full items-center justify-between gap-3">
+                <span>{suggestion}</span>
+                {suggestion.toLowerCase() === normalizedValue ? (
+                  <Check className="size-4 text-primary" />
+                ) : null}
+              </div>
+            </DropdownMenuItem>
+          ))
+        ) : (
+          <div className="px-3 py-2 text-sm text-muted-foreground">
+            No saved categories match yet.
+          </div>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 function SortButton({
   label,
@@ -127,6 +245,28 @@ export function TransactionsSection({
   onClearFilters,
 }: TransactionsSectionProps) {
   const currencyLocale = getCurrencyOption(currency).locale;
+  const transactionTypeOptions: Array<{
+    value: TransactionType;
+    label: string;
+  }> = [
+    { value: "expense", label: "Expense" },
+    { value: "income", label: "Income" },
+  ];
+  const filterTypeOptions: Array<{
+    value: FinanceFilters["type"];
+    label: string;
+  }> = [
+    { value: "all", label: "All types" },
+    { value: "income", label: "Income" },
+    { value: "expense", label: "Expense" },
+  ];
+  const categoryOptions: Array<{ value: string; label: string }> = [
+    { value: "all", label: "All categories" },
+    ...categories.map((category) => ({
+      value: category,
+      label: category,
+    })),
+  ];
   const [formState, setFormState] = useState<TransactionFormState>(defaultFormState);
   const [isPending, startFormTransition] = useTransition();
 
@@ -242,27 +382,19 @@ export function TransactionsSection({
               </label>
               <label className="space-y-2 text-sm text-muted-foreground">
                 <span>Category</span>
-                <Input
-                  type="text"
-                  list="transaction-categories"
+                <CategorySuggestionInput
                   value={formState.category}
-                  onChange={(event) => updateForm("category", event.target.value)}
-                  placeholder="Housing"
-                  required
+                  suggestions={categories}
+                  onChange={(value) => updateForm("category", value)}
                 />
               </label>
               <label className="space-y-2 text-sm text-muted-foreground">
                 <span>Type</span>
-                <select
-                  className={selectClassName}
+                <FilterDropdown
                   value={formState.type}
-                  onChange={(event) =>
-                    updateForm("type", event.target.value as TransactionType)
-                  }
-                >
-                  <option value="expense">Expense</option>
-                  <option value="income">Income</option>
-                </select>
+                  options={transactionTypeOptions}
+                  onSelect={(value) => updateForm("type", value)}
+                />
               </label>
               <div className="flex items-end">
                 <Button className="h-10 w-full rounded-xl" disabled={isPending} type="submit">
@@ -271,12 +403,6 @@ export function TransactionsSection({
                 </Button>
               </div>
             </form>
-
-            <datalist id="transaction-categories">
-              {categories.map((category) => (
-                <option key={category} value={category} />
-              ))}
-            </datalist>
           </CardContent>
         </Card>
       ) : null}
@@ -308,30 +434,17 @@ export function TransactionsSection({
               />
             </label>
 
-            <select
-              className={selectClassName}
+            <FilterDropdown
               value={filters.type}
-              onChange={(event) =>
-                onTypeFilterChange(event.target.value as FinanceFilters["type"])
-              }
-            >
-              <option value="all">All types</option>
-              <option value="income">Income</option>
-              <option value="expense">Expense</option>
-            </select>
+              options={filterTypeOptions}
+              onSelect={onTypeFilterChange}
+            />
 
-            <select
-              className={selectClassName}
+            <FilterDropdown
               value={filters.category}
-              onChange={(event) => onCategoryFilterChange(event.target.value)}
-            >
-              <option value="all">All categories</option>
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
+              options={categoryOptions}
+              onSelect={onCategoryFilterChange}
+            />
           </div>
         </CardHeader>
 

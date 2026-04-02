@@ -349,30 +349,51 @@ export function DashboardShell({ page }: DashboardShellProps) {
     <div className="relative flex-1 overflow-hidden">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(77,154,163,0.14),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(210,156,83,0.15),transparent_28%)]" />
 
-      <main className="relative mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-        <div className="grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)]">
-          <motion.div
-            initial={sectionMotion.initial}
-            animate={sectionMotion.animate}
-            transition={sectionMotion.transition}
-            className="xl:sticky xl:top-6 xl:self-start"
-          >
-            {sidebar}
-          </motion.div>
-
-          <div className="space-y-6">
+      <div className="relative mx-auto flex w-full max-w-[1600px] flex-col px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <main className="w-full">
+          <div className="grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)]">
             <motion.div
               initial={sectionMotion.initial}
               animate={sectionMotion.animate}
               transition={sectionMotion.transition}
+              className="xl:sticky xl:top-6 xl:self-start"
             >
-              {header}
+              {sidebar}
             </motion.div>
 
-            {pageBody}
+            <div className="space-y-6">
+              <motion.div
+                initial={sectionMotion.initial}
+                animate={sectionMotion.animate}
+                transition={sectionMotion.transition}
+              >
+                {header}
+              </motion.div>
+
+              {pageBody}
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+
+        <motion.footer
+          initial={sectionMotion.initial}
+          animate={sectionMotion.animate}
+          transition={sectionMotion.transition}
+          className="mt-8 border-t border-border/60 pt-5"
+        >
+          <div className="flex flex-col gap-3 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+            <p>Open source project documentation and codebase.</p>
+            <a
+              href="https://github.com/VTCodeCraft/finance-dashboard"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/70 px-4 py-2 font-medium text-foreground transition hover:border-primary/40 hover:text-primary"
+            >
+              View GitHub repository
+            </a>
+          </div>
+        </motion.footer>
+      </div>
     </div>
   );
 }
